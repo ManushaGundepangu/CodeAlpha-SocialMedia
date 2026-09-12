@@ -1,0 +1,598 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}ConnectHub{% endblock %}</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-image: url("{% static 'social/images/bg1.png' %}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+
+            min-height: 100vh;
+
+            transition: background-image 1.5s ease-in-out;
+
+            color: #1f2937;
+            line-height: 1.6;
+        }
+       
+
+        /* NAVBAR */
+
+        nav {
+            background: rgba(255, 255, 255, 0.90);
+            backdrop-filter: blur(12px);
+             -webkit-backdrop-filter: blur(12px);
+            height: 70px;
+            padding: 0 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: 800;
+            text-decoration: none;
+            color: #4f46e5;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #4b5563;
+            padding: 9px 14px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover {
+            background: #eef2ff;
+            color: #4f46e5;
+        }
+
+        .nav-profile {
+            background: #eef2ff;
+            color: #4f46e5 !important;
+        }
+
+        /* MAIN */
+
+        .container {
+            width: 92%;
+            max-width: 1000px;
+            margin: 35px auto;
+        }
+
+        /* CARDS */
+
+        .card {
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 22px;
+            box-shadow:
+                0 4px 20px rgba(0, 0, 0, 0.06);
+
+            border: 1px solid #eef0f4;
+            transition: 0.25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow:
+               0 15px 35px rgba(0, 0, 0, 0.10);
+        }
+
+        /* HEADINGS */
+
+        h1,
+        h2,
+        h3 {
+            color: #111827;
+        }
+
+        h2 {
+            margin-bottom: 8px;
+        }
+
+        /* INPUTS */
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 13px 15px;
+            margin: 8px 0 15px;
+
+            border: 1px solid #d9dee8;
+            border-radius: 10px;
+
+            font-size: 15px;
+            outline: none;
+
+            transition: 0.2s;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px #eef2ff;
+        }
+
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        /* BUTTON */
+
+        button,
+        .btn {
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #6366f1
+            );
+
+            color: white;
+            border: none;
+
+            padding: 10px 17px;
+            border-radius: 9px;
+
+            cursor: pointer;
+            text-decoration: none;
+
+            display: inline-block;
+
+            font-weight: 600;
+            font-size: 14px;
+
+            transition: 0.2s;
+        }
+
+        button:hover,
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.25);
+        }
+
+        .danger {
+            background: #ef4444 !important;
+        }
+
+        /* USER BUTTON */
+
+        .user-button {
+            background: #eef2ff;
+            color: #4338ca;
+
+            padding: 9px 15px;
+            border-radius: 20px;
+
+            text-decoration: none;
+
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+        .user-button:hover {
+            background: #e0e7ff;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+        }
+        /* LIKE BUTTON */
+
+        .like-button {
+            transition: all 0.25s ease;
+        }
+
+        .like-button:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.25);
+        }
+
+        /* ALREADY LIKED */
+
+        .liked-button {
+            opacity: 0.85;
+        }
+
+        /* POST HOVER */
+
+        .card {
+            transition: all 0.25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        /* USER BUTTON HOVER */
+
+        .user-button {
+            transition: all 0.25s ease;
+        }
+
+        .user-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.15);
+        }
+
+        /* NAVIGATION HOVER */
+
+        .nav-links a {
+            transition: all 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            transform: translateY(-2px);
+        }
+
+        /* INPUT HOVER */
+
+        input:hover,
+        textarea:hover {
+            border-color: #a5b4fc;
+        }
+
+        /* POST IMAGE */
+
+        .post-image {
+            transition: transform 0.3s ease;
+        }
+
+        .post-image:hover {
+            transform: scale(1.01);
+        }
+
+
+
+        /* POST */
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .username {
+            color: #4f46e5;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .post-content {
+            margin: 18px 0;
+            font-size: 16px;
+        }
+
+        .post-image {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-top: 10px;
+            transition: 0.3s ease;
+        }
+        .post-image:hover {
+            transform: scale(1.01);
+        }
+        .profile-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid white;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .default-profile-photo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #eef2ff;
+            font-size: 48px;
+        }
+
+        .profile-upload-btn {
+            display: inline-block;
+            background: #eef2ff;
+            color: #4f46e5;
+            padding: 9px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.25s ease;
+        }
+
+        .profile-upload-btn:hover {
+            background: #e0e7ff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(79, 70, 229, 0.15);
+        }
+
+        /* ACTIONS */
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 18px;
+            padding-top: 15px;
+
+            border-top: 1px solid #eee;
+        }
+
+        .action-info {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        /* COMMENTS */
+
+        .comment {
+            background: #f8fafc;
+            padding: 11px 14px;
+            border-radius: 10px;
+            margin-top: 9px;
+        }
+
+        /* MESSAGES */
+
+        .message {
+            background: #eef2ff;
+            color: #4338ca;
+
+            padding: 13px 16px;
+            border-radius: 10px;
+
+            margin-bottom: 18px;
+        }
+
+        /* PROFILE */
+
+        .profile-header {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .profile-avatar {
+            width: 90px;
+            height: 90px;
+
+            border-radius: 50%;
+
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #7c3aed
+            );
+
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin: 0 auto 15px;
+
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+
+            margin: 20px 0;
+        }
+
+        .profile-stat {
+            text-align: center;
+        }
+
+        .profile-stat strong {
+            font-size: 20px;
+            color: #111827;
+        }
+
+        .profile-stat span {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        /* DIVIDER */
+
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 20px 0;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 700px) {
+
+            nav {
+                height: auto;
+                padding: 14px 4%;
+
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .logo {
+                font-size: 23px;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .nav-links a {
+                font-size: 13px;
+                padding: 7px 9px;
+            }
+
+            .container {
+                width: 94%;
+                margin: 20px auto;
+            }
+
+            .card {
+                padding: 17px;
+                border-radius: 13px;
+            }
+
+            .post-header {
+                align-items: flex-start;
+            }
+
+            .profile-stats {
+                gap: 25px;
+            }
+
+            .actions {
+                flex-wrap: wrap;
+            }
+
+            .btn {
+                padding: 9px 13px;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+    <nav>
+
+        <a href="{% url 'home' %}" class="logo">
+            ConnectHub
+        </a>
+
+
+        <div class="nav-links">
+
+            <a href="{% url 'home' %}">
+                🏠 Home
+            </a>
+
+
+            {% if user.is_authenticated %}
+
+                
+
+                <a
+                    href="{% url 'profile' user.username %}"
+                    class="nav-profile"
+                >
+                    👤 My Profile
+                </a>
+
+              
+                
+
+                <a href="{% url 'logout' %}">
+                    Logout
+                </a>
+
+            {% else %}
+
+                <a href="{% url 'login' %}">
+                    🔑 Login
+                </a>
+                
+            {% endif %}
+
+        </div>
+
+    </nav>
+
+
+    <div class="container">
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="message">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+
+        {% block content %}
+
+        {% endblock %}
+
+    </div>
+
+   <script>
+
+    const backgrounds = [
+        "{% static 'social/images/bg1.png' %}",
+        "{% static 'social/images/bg2.png' %}",
+        "{% static 'social/images/bg3.png' %}",
+        "{% static 'social/images/bg4.png' %}",
+        "{% static 'social/images/bg5.png' %}"
+    ];
+
+    let currentBackground = 0;
+
+    setInterval(function () {
+
+        currentBackground++;
+
+        if (currentBackground >= backgrounds.length) {
+            currentBackground = 0;
+        }
+
+        document.body.style.backgroundImage =
+            `url("${backgrounds[currentBackground]}")`;
+
+    }, 8000);
+
+</script>
+
+</body>
+
+</html>

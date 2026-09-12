@@ -1,0 +1,73 @@
+{% extends 'social/base.html' %}
+
+{% block title %}Register - ConnectHub{% endblock %}
+
+{% block content %}
+
+<div class="card" style="max-width:500px; margin:auto;">
+
+    <h2>Create Your Account 🚀</h2>
+
+    <p>Join ConnectHub and start connecting with others.</p>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+
+        <label>Username</label>
+
+        <input
+            type="text"
+            name="username"
+            placeholder="Choose a username"
+            required
+        >
+
+
+        <label>Email</label>
+
+        <input
+            type="email"
+            name="email"
+            placeholder="Enter your email"
+        >
+
+
+        <label>Password</label>
+
+        <input
+            type="password"
+            name="password"
+            placeholder="Create a password"
+            required
+        >
+
+
+        <label>Confirm Password</label>
+
+        <input
+            type="password"
+            name="confirm_password"
+            placeholder="Confirm your password"
+            required
+        >
+
+
+        <button type="submit">
+            Create Account
+        </button>
+
+    </form>
+
+
+    <p style="margin-top:20px;">
+        Already have an account?
+        <a href="{% url 'login' %}">
+            Login
+        </a>
+    </p>
+
+</div>
+
+{% endblock %}

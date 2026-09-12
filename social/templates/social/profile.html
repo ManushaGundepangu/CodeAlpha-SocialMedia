@@ -1,0 +1,228 @@
+{% extends 'social/base.html' %}
+
+{% block title %}{{ profile_user.username }} - ConnectHub{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <!-- Profile Photo -->
+    <div style="text-align:center; margin-bottom:20px;">
+
+        {% if profile_user.profile.profile_image %}
+
+            <img
+                src="{{ profile_user.profile.profile_image.url }}"
+                alt="{{ profile_user.username }}"
+                class="profile-photo"
+            >
+
+        {% else %}
+
+            <div class="profile-photo default-profile-photo">
+                👤
+            </div>
+
+        {% endif %}
+
+
+        <h1 style="margin-top:12px;">
+            @{{ profile_user.username }}
+        </h1>
+
+
+        <!-- Change Photo - Only for own profile -->
+        {% if user.is_authenticated and user == profile_user %}
+
+            <form
+                method="POST"
+                action="{% url 'update_profile_photo' %}"
+                enctype="multipart/form-data"
+                style="margin-top:12px;"
+            >
+
+                {% csrf_token %}
+
+                <label class="profile-upload-btn">
+
+                    🖼️
+                    {% if profile_user.profile.profile_image %}
+                        Change Profile Photo
+                    {% else %}
+                        Add Profile Photo
+                    {% endif %}
+
+                    <input
+                        type="file"
+                        name="profile_image"
+                        accept="image/*"
+                        style="display:none;"
+                        onchange="this.form.submit();"
+                    >
+
+                </label>
+
+            </form>
+
+        {% endif %}
+
+    </div>
+
+
+    {% if profile_user.profile.bio %}
+
+        <p>{{ profile_user.profile.bio }}</p>
+
+    {% else %}
+
+        <p>No bio added yet.</p>
+
+    {% endif %}
+
+
+    <div class="profile-stats">
+
+        <div>
+            <strong>{{ posts|length }}</strong>
+            <br>
+            Posts
+        </div>
+
+        <div>
+            <strong>{{ followers_count }}</strong>
+            <br>
+            Followers
+        </div>
+
+        <div>
+            <strong>{{ following_count }}</strong>
+            <br>
+            Following
+        </div>
+
+    </div>
+
+
+    {% if user.is_authenticated and user != profile_user %}
+
+        {% if is_following %}
+
+            <a
+                href="{% url 'follow_user' profile_user.username %}"
+                class="btn danger"
+            >
+                Unfollow
+            </a>
+
+        {% else %}
+
+            <a
+                href="{% url 'follow_user' profile_user.username %}"
+                class="btn"
+            >
+                Follow
+            </a>
+
+        {% endif %}
+
+    {% endif %}
+
+</div>
+
+
+<h2>Posts by @{{ profile_user.username }}</h2>
+
+
+{% for post in posts %}
+
+<div class="card">
+
+    <div class="post-header">
+
+        <a
+            href="{% url 'profile' post.user.username %}"
+            class="username"
+        >
+            @{{ post.user.username }}
+        </a>
+
+        <small>
+            {{ post.created_at|date:"M d, Y H:i" }}
+        </small>
+
+    </div>
+
+
+    {% if post.content %}
+        <p>{{ post.content }}</p>
+    {% endif %}
+
+
+    {% if post.image %}
+
+        <img
+            src="{{ post.image.url }}"
+            alt="Post image"
+            class="post-image"
+        >
+
+    {% endif %}
+
+
+    <div class="actions">
+
+        {% if user.is_authenticated %}
+
+            <a
+                href="{% url 'like_post' post.id %}"
+                class="btn"
+            >
+                ❤️ Like {{ post.like_count }}
+            </a>
+
+        {% else %}
+
+            <span>
+                ❤️ {{ post.like_count }} likes
+            </span>
+
+        {% endif %}
+        
+
+        <span>
+            💬 {{ post.comment_count }} comments
+        </span>
+        <!-- Delete button only for post owner -->
+        {% if user.is_authenticated and post.user == user %}
+
+            <a
+                href="{% url 'delete_post' post.id %}"
+                class="btn"
+                style="
+                    background: #fee2e2;
+                    color: #dc2626;
+                "
+                onclick="return confirm('Are you sure you want to delete this post?');"
+            >
+                🗑️ Delete
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% empty %}
+
+<div class="card">
+
+    <p>
+        This user hasn't published any posts yet.
+    </p>
+
+</div>
+
+{% endfor %}
+
+{% endblock %}

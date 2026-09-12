@@ -1,0 +1,472 @@
+{% extends 'social/base.html' %}
+
+{% block title %}Home - ConnectHub{% endblock %}
+
+{% block content %}
+
+<!-- Welcome Section -->
+<div class="card" style="
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: white;
+    padding: 30px;
+">
+
+    {% if user.is_authenticated %}
+
+        <h1 style="color:white; margin-bottom:8px;">
+            Welcome back, {{ user.username }}! 👋
+        </h1>
+
+        <p style="opacity:0.9;">
+            Share something with your community today.
+        </p>
+
+    {% else %}
+
+        <h1 style="color:white; margin-bottom:8px;">
+            Welcome to ConnectHub 👋
+        </h1>
+
+        <p style="opacity:0.9;">
+            Connect, share and discover new people.
+        </p>
+
+    {% endif %}
+
+</div>
+
+
+<!-- People Section -->
+<div class="card">
+
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:15px;
+        gap:10px;
+    ">
+
+        <div>
+            <h2>👥 People on ConnectHub</h2>
+
+            <p style="color:#6b7280; margin-top:4px;">
+                Discover people and view their profiles.
+            </p>
+        </div>
+
+    </div>
+
+
+    <div style="
+        display:flex;
+        flex-wrap:wrap;
+        gap:10px;
+    ">
+
+        {% for person in users %}
+
+            <a
+                href="{% url 'profile' person.username %}"
+                class="user-button"
+            >
+                👤 {{ person.username }}
+            </a>
+
+        {% empty %}
+
+            <p style="color:#6b7280;">
+                No registered users yet.
+            </p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+
+<!-- Create Post -->
+{% if user.is_authenticated %}
+
+<div class="card">
+
+    <h2>📝 Create a Post</h2>
+
+    <p style="
+        color:#6b7280;
+        margin-bottom:15px;
+    ">
+        What's on your mind?
+    </p>
+
+
+    <form
+        method="POST"
+        action="{% url 'create_post' %}"
+        enctype="multipart/form-data"
+    >
+
+        {% csrf_token %}
+
+        <textarea
+            name="content"
+            placeholder="Share your thoughts with ConnectHub..."
+        ></textarea>
+
+
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:10px;
+            flex-wrap:wrap;
+        ">
+
+            <label style="
+                background:#f3f4f6;
+                padding:9px 14px;
+                border-radius:8px;
+                cursor:pointer;
+                color:#4b5563;
+                font-size:14px;
+            ">
+
+                🖼️ Add Image
+
+                <input
+                    type="file"
+                    name="image"
+                    accept="image/*"
+                    style="display:none;"
+                >
+
+            </label>
+
+
+            <button type="submit">
+                Publish Post 🚀
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endif %}
+
+
+<!-- Feed Heading -->
+<div style="
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:30px 0 15px;
+">
+
+    <h2>📰 Community Feed</h2>
+
+</div>
+
+
+<!-- Posts -->
+{% for post in posts %}
+
+<div class="card">
+
+    <!-- Post Header -->
+
+    <div class="post-header">
+
+        <div style="
+            display:flex;
+            align-items:center;
+            gap:12px;
+        ">
+
+            {% if post.user.profile.profile_image %}
+
+                <img
+                    src="{{ post.user.profile.profile_image.url }}"
+                    alt="{{ post.user.username }}"
+                    style="
+                        width:45px;
+                        height:45px;
+                        border-radius:50%;
+                        object-fit:cover;
+                        border:2px solid white;
+                        box-shadow:0 3px 10px rgba(0,0,0,0.12);
+                    "
+                >
+
+            {% else %}
+
+                <div style="
+                    width:45px;
+                    height:45px;
+                    border-radius:50%;
+                    background:linear-gradient(135deg,#2563eb,#7c3aed);
+                    color:white;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-weight:bold;
+                    font-size:18px;
+                ">
+
+                    {{ post.user.username|first|upper }}
+
+                </div>
+
+            {% endif %}
+
+
+            <div>
+
+                <strong style="display:block;">
+                    {{ post.user.username }}
+                </strong>
+
+                <small style="color:#6b7280;">
+                    {{ post.created_at|date:"M d, Y • H:i" }}
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <a
+            href="{% url 'profile' post.user.username %}"
+            class="btn"
+            style="font-size:13px;"
+        >
+            View Profile
+        </a>
+
+    </div>
+
+
+    <!-- Post Content -->
+
+    {% if post.content %}
+
+        <div class="post-content">
+            {{ post.content }}
+        </div>
+
+    {% endif %}
+
+
+    <!-- Post Image -->
+
+    {% if post.image %}
+
+        <img
+            src="{{ post.image.url }}"
+            alt="Post image"
+            class="post-image"
+        >
+
+    {% endif %}
+
+
+    <!-- Actions -->
+
+    <div class="actions">
+
+        {% if user.is_authenticated %}
+
+            {% if post.id in liked_post_ids %}
+
+                <span
+                    class="btn liked-button"
+                    style="
+                        background: #e5e7eb;
+                        color: #6b7280;
+                        cursor: not-allowed;
+                        box-shadow: none;
+                    "
+                >
+                    ❤️ Liked
+                </span>
+
+            {% else %}
+
+                <a
+                    href="{% url 'like_post' post.id %}"
+                    class="btn like-button"
+                >
+                    ♡ Like
+                </a>
+
+            {% endif %}
+
+        {% else %}
+
+            <span class="action-info">
+                ♡ Like
+            </span>
+
+        {% endif %}
+
+
+        <span class="action-info">
+            ❤️ {{ post.like_count }} likes
+        </span>
+
+
+        <span class="action-info">
+            💬 {{ post.comment_count }} comments
+        </span>
+    </div>
+
+
+    <!-- Comments -->
+
+    <div style="margin-top:20px;">
+
+        <h3 style="font-size:16px; margin-bottom:10px;">
+            💬 Comments
+        </h3>
+
+
+        {% for comment in post.comments.all %}
+
+            <div class="comment">
+
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    gap:10px;
+                ">
+
+                    <div>
+
+                        <strong>
+                            @{{ comment.user.username }}
+                        </strong>
+
+                        <span style="margin-left:5px;">
+                            {{ comment.content }}
+                        </span>
+
+                    </div>
+
+
+                    <a
+                        href="{% url 'profile' comment.user.username %}"
+                        class="user-button"
+                        style="
+                            padding:5px 9px;
+                            font-size:11px;
+                        "
+                    >
+                        Profile
+                    </a>
+
+                </div>
+
+
+                <small style="color:#9ca3af;">
+                    {{ comment.created_at|date:"M d, Y H:i" }}
+                </small>
+
+            </div>
+
+
+        {% empty %}
+
+            <p style="
+                color:#9ca3af;
+                font-size:14px;
+            ">
+                No comments yet. Be the first to comment!
+            </p>
+
+        {% endfor %}
+
+
+        <!-- Comment Form -->
+
+        {% if user.is_authenticated %}
+
+        <form
+            method="POST"
+            action="{% url 'add_comment' post.id %}"
+            style="margin-top:15px;"
+        >
+
+            {% csrf_token %}
+
+            <div style="
+                display:flex;
+                gap:8px;
+                align-items:center;
+            ">
+
+                <input
+                    type="text"
+                    name="content"
+                    placeholder="Write a comment..."
+                    required
+                    style="margin:0;"
+                >
+
+                <button type="submit">
+                    Send
+                </button>
+
+            </div>
+
+        </form>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+{% empty %}
+
+<!-- Empty Feed -->
+
+<div class="card" style="
+    text-align:center;
+    padding:50px 20px;
+">
+
+    <div style="font-size:50px;">
+        📭
+    </div>
+
+    <h2 style="margin-top:15px;">
+        No posts yet
+    </h2>
+
+    <p style="
+        color:#6b7280;
+        margin:8px 0 20px;
+    ">
+        Be the first person to share something with the community!
+    </p>
+
+    {% if not user.is_authenticated %}
+
+        <a
+            href="{% url 'register' %}"
+            class="btn"
+        >
+            Join ConnectHub 🚀
+        </a>
+
+    {% endif %}
+
+</div>
+
+{% endfor %}
+
+{% endblock %}

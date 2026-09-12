@@ -1,0 +1,53 @@
+{% extends 'social/base.html' %}
+
+{% block title %}Login - ConnectHub{% endblock %}
+
+{% block content %}
+
+<div class="card" style="max-width:500px; margin:auto;">
+
+    <h2>Welcome Back 👋</h2>
+
+    <p>Login to your ConnectHub account.</p>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <label>Username</label>
+
+        <input
+            type="text"
+            name="username"
+            placeholder="Enter your username"
+            required
+        >
+
+
+        <label>Password</label>
+
+        <input
+            type="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+        >
+
+
+        <button type="submit">
+            Login
+        </button>
+
+    </form>
+
+
+    <p style="margin-top:20px;">
+        Don't have an account?
+        <a href="{% url 'register' %}">
+            Create one
+        </a>
+    </p>
+
+</div>
+
+{% endblock %}
